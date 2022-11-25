@@ -1,6 +1,6 @@
     // A tag template é essencial para encapsular todo o html do componente:
 <template>
-
+<div id="interface">
     <div id="msg">
         <h1>{{ msg }}</h1>
     </div>
@@ -59,6 +59,7 @@
 
         </div>
     </div>
+</div>
 </template>
     
 
@@ -157,6 +158,8 @@ export default {
 
 
 <style scoped>
+
+
 h3 {
     margin: 40px 0 0;
 }
@@ -178,8 +181,6 @@ a {
 .output {
     background-color: rgb(14, 14, 14);
     color: #fff;
-    font-size: 50px;
-
 }
 
 .equal {
@@ -231,17 +232,17 @@ a {
 
 #bodyCalculator {
     background-color: #212529;
-    /* display: flex;
-    align-items: center; */
+    display: flex;
+    align-items: center;
     border-radius: 10px;
 
 }
 
 .hello {
-    background-color: #42b98300;
     display: flex;
     justify-content: center;
-    align-items: center;
+    height:auto;
+    
 }
 
 #msg {
@@ -255,6 +256,7 @@ td {
     cursor: pointer;
     width: 70px;
     height: 70px;
+    font-size: 25px;
 }
 
 table {
@@ -272,5 +274,14 @@ table {
 
 #display-date {
     font-size: smaller;
+}
+
+#interface {
+    background-color: #65f7b5f6;
+}
+
+* {
+    margin: 0;
+    box-sizing:border-box;
 }
 </style>

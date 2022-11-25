@@ -22,6 +22,6 @@
 
 <style>
   #App {
-    color:#02bb68;
+    color:#038047;
   }
 </style>
