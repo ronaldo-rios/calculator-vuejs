@@ -22,7 +22,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="clean">DEL</td>
+                            <td class="clean" v-on:click="clickDel">DEL</td>
                             <td v-on:click="clearField" class="clean">AC</td>
                             <td class="operators" v-on:click="SquareRoot" alt="squareroot"><i
                                     class="fa-solid fa-square-root-variable"></i></td>
@@ -82,6 +82,14 @@ export default {
     methods: {
         clearField() {
             this.output = '';
+        },
+        clickDel(){
+            if(this.output.length > 1){
+                this.output = this.output.substring(0, this.output.length - 1);
+            }
+            else {
+                this.output = '0';
+            }
         },
         calculatePercent() {
             this.output = parseFloat(this.output) / 100;
