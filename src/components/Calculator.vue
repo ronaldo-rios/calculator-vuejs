@@ -1,47 +1,57 @@
     // A tag template é essencial para encapsular todo o html do componente:
 <template>
-    <div class="hello">
-        <h1>{{ msg }}</h1>
-        <div>
 
-            <div class="col-md-4 m-3">
-                <table class="table table-bordered">
-                    
+    <div id="msg">
+        <h1>{{ msg }}</h1>
+    </div>
+
+    <div class="hello">
+        <div id="bodyCalculator">
+
+            <div class="col-md-4 calc bg bg-dark rounded-4 m-4">
+                <table class="table table-borderless">
+
                     <tbody>
                         <tr class="output">
-                            <td colspan="4">
+
+                            <td @click="init()" colspan="4">
+                                <!-- {{ displayDate }}
+                                {{ displayTime }}
+                                 -->
                                 {{ output || 0 }}
                             </td>
                         </tr>
                         <tr>
                             <td class="clean">DEL</td>
                             <td v-on:click="clearField" class="clean">AC</td>
-                            <td>raiz</td>
-                            <td>/</td>
+                            <td class="operators" v-on:click="SquareRoot" alt="squareroot"><i
+                                    class="fa-solid fa-square-root-variable"></i></td>
+                            <td class="operators" @click="processOutput('divide')"><i class="fa-solid fa-divide"></i>
+                            </td>
                         </tr>
                         <tr>
-                            <td>7</td>
-                            <td>8</td>
-                            <td>9</td>
-                            <td>X</td>
+                            <td class="number" v-on:click="getNumber('7')">7</td>
+                            <td class="number" v-on:click="getNumber('8')">8</td>
+                            <td class="number" v-on:click="getNumber('9')">9</td>
+                            <td class="operators" @click="processOutput('multiply')">X</td>
                         </tr>
                         <tr>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>-</td>
+                            <td class="number" v-on:click="getNumber('4')">4</td>
+                            <td class="number" v-on:click="getNumber('5')">5</td>
+                            <td class="number" v-on:click="getNumber('6')">6</td>
+                            <td class="operators" @click="processOutput('subtract')">-</td>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>+</td>
+                            <td class="number" v-on:click="getNumber('1')">1</td>
+                            <td class="number" v-on:click="getNumber('2')">2</td>
+                            <td class="number" v-on:click="getNumber('3')">3</td>
+                            <td class="operators" @click="processOutput('addition')">+</td>
                         </tr>
                         <tr>
-                            <td v-on:click="calculatePercent">%</td>
-                            <td>0</td>
-                            <td>.</td>
-                            <td class="equal">=</td>
+                            <td class="operators" v-on:click="calculatePercent">%</td>
+                            <td class="number" v-on:click="getNumber('0')">0</td>
+                            <td class="operators" v-on:click="getDot">.</td>
+                            <td class="equal" @click="updateOutput">=</td>
                         </tr>
                     </tbody>
                 </table>
@@ -53,27 +63,98 @@
     
 
 <script>// Component name "Calculator" should always be multi-word  vue/multi-word-component-names
+
 export default {
     name: 'CalculatorVue',
     props: {
         msg: String
     },
-    data(){
+    data() {
         return {
-            output:''
+            displayTime: Date,
+            displayDate: Date,
+            output: '',
+            previousValue: null,
+            operationFired: false
         }
-    },
+    }, // Métodos usados para as operações de todos os botões da calculadora:
     methods: {
-        clearField(){
+        clearField() {
             this.output = '';
         },
         calculatePercent() {
             this.output = parseFloat(this.output) / 100;
+        },
+        SquareRoot() {
+            this.output = parseFloat(Math.sqrt(this.output));
+        },
+        getNumber(number) {
+
+            if (this.operationFired) {
+                this.output = ''
+                this.operationFired = false
+            }
+
+            this.output = `${this.output}${number}`;
+        },
+        getDot() {
+            if (this.output.indexOf('.') === -1) {
+                this.output = this.output + '.';
+            }
+        },
+        processOutput(value) {
+
+            if (value == 'addition') {
+                this.operation = (a, b) => {
+                    return parseFloat(a) + parseFloat(b);
+                }
+            }
+            else if (value == 'subtract') {
+                this.operation = (a, b) => {
+                    return parseFloat(a) - parseFloat(b);
+                }
+            }
+            else if (value == 'multiply') {
+                this.operation = (a, b) => {
+                    return parseFloat(a) * parseFloat(b);
+                }
+            }
+            else if (value == 'divide') {
+                this.operation = (a, b) => {
+                    return parseFloat(a) / parseFloat(b);
+                }
+            }
+
+            this.previousValue = this.output;
+            this.operationFired = true;
+        },
+        updateOutput() {
+            this.output = `${this.operation(this.previousValue, this.output)}`;
+            this.previousValue = null;
+        },
+        setDisplayDateTime() {
+            this.displayDate = new Date().toLocaleDateString("pt-br", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
+            });
+            this.displayTime = new Date().toLocaleTimeString("pt-br");
+        },
+        init() {
+            this.setDisplayDateTime();
+            setInterval(() => {
+                this.setDisplayDateTime();
+            }, 1000);
         }
+
     }
+
+
 }
 
 </script>
+
+
 
 <style scoped>
 h3 {
@@ -91,21 +172,27 @@ li {
 }
 
 a {
-    color: #42b983
+    color: #42b983;
 }
 
 .output {
     background-color: rgb(14, 14, 14);
-    color:#fff;
+    color: #fff;
+    font-size: 50px;
+
 }
 
 .equal {
-    background-color:rgb(3, 131, 182);
-    color:white;
+    background-color: rgb(3, 131, 182);
+    color: white;
+    border-radius: 10px;
+    padding: 12px 12px;
 }
 
 .clean {
     background-color: rgb(236, 174, 4);
+    border-radius: 10px;
+    padding: 12px 12px;
 }
 
 .equal:active {
@@ -114,9 +201,76 @@ a {
 
 .clean:active {
     background-color: rgb(165, 136, 8);
+
 }
 
+.number {
+    background-color: #6C757C;
+    color: white;
+    border-radius: 10px;
+    padding: 12px 12px;
+}
+
+.number:active {
+    background-color: black;
+    color: white;
+
+}
+
+.operators {
+    background-color: #6C757C;
+    color: white;
+    border-radius: 10px;
+    padding: 12px 12px;
+}
+
+.operators:active {
+    background-color: black;
+    color: white;
+}
+
+#bodyCalculator {
+    background-color: #212529;
+    /* display: flex;
+    align-items: center; */
+    border-radius: 10px;
+
+}
+
+.hello {
+    background-color: #42b98300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#msg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 td {
-    cursor:pointer;
+    cursor: pointer;
+    width: 70px;
+    height: 70px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 15px 10px;
+}
+
+.calc {
+    width: 400px;
+}
+
+#display-time {
+    font-size: smaller;
+}
+
+#display-date {
+    font-size: smaller;
 }
 </style>
