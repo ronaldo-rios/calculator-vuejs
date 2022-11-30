@@ -182,9 +182,9 @@ export default {
         },
         // Limitador de números para não ocorrer o transbordamento no CSSe HTML:
         limitNumbers() {  
-                    if(this.output.length > 26){
-                        this.output = this.output.substring(0, 26)
-                    }
+                   if(this.output.length > 26){
+                    this.output = this.output.substring(0, 26)
+                   } 
         }
 
     }
